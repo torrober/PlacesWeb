@@ -1,0 +1,18 @@
+{
+  "name": "placesweb",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build --mode staging",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.7.6",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2"
+  },
+  "dependencies": {
+    "@fancyapps/ui": "^4.0.12",
+    "leaflet": "^1.7.1"
+  }
+}
