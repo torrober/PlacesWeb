@@ -1,8 +1,8 @@
 # PlacesWeb
 
 ### Maps app built with Vite, VanillaTS, Leaflet, Foursquare, Open Cage, OSM**, Google Maps** and Mapbox**
-
 <img src="https://i.imgur.com/KEAGaeg.png"></img>
+<img src="https://i.imgur.com/seJmixQ.png"></img>
 <img src='https://i.imgur.com/dVjclKt.png'></img>
 <img src='https://i.imgur.com/YTBCQAe.png'></img>
 
