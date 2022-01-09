@@ -1,3 +1,5 @@
+import FavUtils from "../utils/FavUtils";
+
 export default class PlaceCard extends HTMLElement {
     name!: string;
     root: ShadowRoot;
@@ -10,7 +12,9 @@ export default class PlaceCard extends HTMLElement {
         super();
         this.root = this.attachShadow({ mode: "open" });
     }
-
+    checkFav(id: string) {
+        return FavUtils.checkFav(id);
+    }
     connectedCallback() {
         this.root.innerHTML = `
         <style>
@@ -76,9 +80,9 @@ export default class PlaceCard extends HTMLElement {
                             <a href="https://maps.google.com/maps?daddr=${this.lat},${this.long}" target="_blank"><h1 class="icon">&#xf14e</h1></a>
                             <span>Get directions</span>
                         </div>
-                        <div class="div3" id="fav">
+                        <div class="div3" id="fav" data-id="${this.id}">
                             <h1 class="icon">&#xf005</h1>
-                            <span>Add to favorites</span>
+                            <span id="favText">${this.checkFav(this.id)? "Remove from favorites" : "Add to favorites"}</span>
                         </div>
                     </div>
             </div>

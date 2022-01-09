@@ -8,6 +8,7 @@ import PlaceElement from "./customElements/PlaceElement";
 import PlaceCard from "./customElements/PlaceCard";
 import getMapLayer from "./utils/MapLayerParser";
 import CoordsUtils from "./utils/CoordsUtils";
+import FavUtils from "./utils/FavUtils";
 const fsq = new Foursquare(import.meta.env.VITE_FOURSQUARE_APIKEY);
 //map settings
 let map = new Map();
@@ -34,30 +35,40 @@ window.onclick = (e: any) => {
     map.removeMarkers();
     map.setMarker(newCoords[0],newCoords[1]);
     localStorage.setItem("pos", JSON.stringify(newCoords));
-    flyTo(Number(e.target!.attributes[0].value), Number(e.target!.attributes[1].value));
+    flyTo(newCoords[0],newCoords[1]);
     document.getElementById("recentPlaces")!.style.display = "none";
     document.getElementById("selectedPlace")!.innerHTML = "";
     fsq.getPhotos(id, 1).then((data) => {
       const imgUrl = data[0].prefix + "original" + data[0].suffix;
-      let selectedPlaceCard = createPlaceCard(imgUrl, e, id);
+      let selectedPlaceCard = createPlaceCard(imgUrl, e.target, id);
       document.getElementById("selectedPlace")!.appendChild(selectedPlaceCard);
       document.getElementById("selectedPlace")!.style.display = "block";
     }).catch(() => {
       const imgUrl = e.target!.attributes.icon.value;
-      let selectedPlaceCard = createPlaceCard(imgUrl, e, id);
+      let selectedPlaceCard = createPlaceCard(imgUrl, e.target, id);
       document.getElementById("selectedPlace")!.appendChild(selectedPlaceCard);
       document.getElementById("selectedPlace")!.style.display = "block";
     })
+  } else if(e.target.localName == "place-card" && e.path[1].id == "fav"){
+    
+    const selectedPlaceID = e.target.id;
+    if(FavUtils.checkFav(selectedPlaceID)){
+      FavUtils.removeFromFav(selectedPlaceID);
+      e.path[1].children[1]!.innerText = "Add to favorites";
+    } else {
+      FavUtils.addToFav(selectedPlaceID);
+      e.path[1].children[1]!.innerText = "Remove from favorites";
+    }
   }
-};
-function createPlaceCard (imgUrl: string, e: any, id: string) {
+}; 
+function createPlaceCard (imgUrl: string, target: any, id: string) {
   let selectedPlaceCard = <PlaceCard>document.createElement("place-card");
-  selectedPlaceCard.name = e.target.attributes.name.value;
+  selectedPlaceCard.name = target.attributes.name.value;
   selectedPlaceCard.cover = imgUrl;
-  selectedPlaceCard.lat = e.target!.attributes[0].value;
-  selectedPlaceCard.long = e.target!.attributes[1].value;
+  selectedPlaceCard.lat = target!.attributes[0].value;
+  selectedPlaceCard.long = target!.attributes[1].value;
   selectedPlaceCard.id = id;
-  selectedPlaceCard.placeType = e.target!.attributes.placeType.value;
+  selectedPlaceCard.placeType = target!.attributes.placeType.value;
   return selectedPlaceCard;
 }
 function init(position: any) {
@@ -151,6 +162,7 @@ function flyTo(lat: number, long: number): any {
   map.flyTo(lat, long, 17);
 }
 window.addEventListener("storage", () => {
+  map.removeMarkers();
   const mapLayer: any = getMapLayer(Number(localStorage.getItem("mapLayer")));
   document.querySelector(".leaflet-tile-pane")!.innerHTML="";
   map.setMapLayer(mapLayer);

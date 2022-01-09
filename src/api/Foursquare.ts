@@ -54,5 +54,16 @@ class Foursquare {
         const response = await fetch(path,options)
         return response.json();
     }
+    public async getPlace(id: any){
+        const path = `${this.url}${id}`;
+        const options = {
+            headers: {
+              Accept: 'application/json',
+              Authorization: this.apikey
+            }
+        };
+        const response = await fetch(path,options)
+        return response.json();
+    }
 }
 export default Foursquare;
